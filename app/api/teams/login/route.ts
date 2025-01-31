@@ -1,37 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Team from "@/models/Team";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export async function POST(req: NextRequest) {
   await connectToDatabase();
 
   try {
-    const { team_name, password } = await req.json();
+    const { enrollmentNumber, password } = await req.json();
 
-    if (!team_name || !password) {
-      return NextResponse.json({ error: "Team name and password are required." }, { status: 400 });
+    if (!enrollmentNumber || !password) {
+      return NextResponse.json({ error: "Enrollment number and password are required." }, { status: 400 });
     }
 
-    // Find team and select password for verification
-    const team = await Team.findOne({ team_name }).select("+password");
+    // Find the user in any team
+    const team = await Team.findOne({ "members.enrollmentNumber": enrollmentNumber }).select("+password");
+
     if (!team) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
+    // Find the specific member in the team
+    interface Member {
+        enrollmentNumber: string;
+        password?: string;
+    }
+
+    interface TeamType {
+        team_id: string;
+        team_name: string;
+        members: Member[];
+        password: string;
+    }
+
+    const member: Member | undefined = team.members.find((m: Member) => m.enrollmentNumber === enrollmentNumber);
+    if (!member) {
+      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+    }
+
     // Check password
-    const isMatch = await team.comparePassword(password);
+    const isMatch = await bcrypt.compare(password, team.password);
     if (!isMatch) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
     // Generate JWT token
-    const token = jwt.sign({ team_id: team.team_id, team_name: team.team_name }, process.env.JWT_SECRET!, {
-      expiresIn: "7d",
-    });
+    const token = jwt.sign(
+      { team_id: team.team_id, team_name: team.team_name, enrollmentNumber },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
 
     return NextResponse.json({ message: "Login successful", token }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Login failed." }, { status: 500 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to login." },
+      { status: 400 }
+    );
   }
 }
