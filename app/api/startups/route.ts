@@ -5,7 +5,6 @@ import Counter from "@/models/Counter";
 import { StartupSchema } from "@/lib/validations/startup";
 
 export const runtime = "nodejs";
-
 export async function GET() {
   try {
     await connectToDatabase();
@@ -16,6 +15,7 @@ export async function GET() {
     return NextResponse.json({ success: false, error: "Failed to fetch startups" }, { status: 500 });
   }
 }
+
 export async function POST(req: Request) {
   try {
     await connectToDatabase();

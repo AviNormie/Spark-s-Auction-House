@@ -7,8 +7,12 @@ export interface IStartup extends Document {
   description: string;
   valuation: number;
   highest_bid: number;
-  winning_team?: Types.ObjectId;
+  owner_team?: Types.ObjectId;
   currentBidAmount: number;
+  industry: string;
+  problem_it_solves: string;
+  businessModel: string;
+  funding_companies: string[];
 }
 
 const StartupSchema = new Schema<IStartup>(
@@ -16,15 +20,18 @@ const StartupSchema = new Schema<IStartup>(
     startup_id: { type: Number, unique: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
-    valuation: { type: Number, required: true },
+    valuation: { type: Number },
     highest_bid: { type: Number, default: 0 },
-    winning_team: { type: Schema.Types.ObjectId, ref: "Team", default: null },
+    owner_team: { type: Schema.Types.ObjectId, ref: "Team", default: null },
     currentBidAmount: { type: Number, default: 0 },
+    industry: { type: String },
+    problem_it_solves: { type: String },
+    businessModel: { type: String },
+    funding_companies: { type: [String] },
   },
   { timestamps: true }
 );
 
-// Middleware to auto-increment `startup_id`
 StartupSchema.pre("save", async function (next) {
   if (!this.startup_id) {
     const counter = await Counter.findByIdAndUpdate(
