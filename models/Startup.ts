@@ -2,6 +2,7 @@ import { Schema, model, models, Document, Types } from "mongoose";
 import Counter from "./Counter";
 
 export interface IStartup extends Document {
+  _id: Types.ObjectId; // Explicitly add this to represent MongoDB's object ID
   startup_id: number;
   name: string;
   description: string;
