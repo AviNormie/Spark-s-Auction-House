@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const MemberSchema = z.object({
+export const MemberSchema = z.object({
   name: z.string().min(1, "Member name cannot be empty"),
   enrollmentNumber: z.string().min(5, "Enrollment number is required"),
 });
