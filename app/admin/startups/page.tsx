@@ -1,8 +1,8 @@
-// Use client directive if you're using hooks like useState or useEffect
+// AuctionPage.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation"; // Correct import for client-side routing
+import { useRouter } from "next/navigation";
 
 interface Startup {
   _id: string;
@@ -10,10 +10,8 @@ interface Startup {
   description: string;
 }
 
-export default function AuctionPage() {
+export default function StartupsPage() {
   const [startups, setStartups] = useState<Startup[]>([]);
-  const [loading, setLoading] = useState(true); // Added loading state
-  const [error, setError] = useState<string | null>(null); // Added error state
   const router = useRouter();
 
   useEffect(() => {
@@ -21,45 +19,39 @@ export default function AuctionPage() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.startups)) {
-          setStartups(data.startups); // Access startups array inside the response object
+          setStartups(data.startups);
         } else {
-          setStartups([]); // Handle the case where data.startups is not an array
+          setStartups([]);
           console.log("No startups found, setting as empty array");
         }
       })
       .catch((error) => {
-        setError("Error fetching startups");
         console.error("Error fetching startups:", error);
-      })
-      .finally(() => {
-        setLoading(false);
       });
   }, []);
 
   const handleRouteChange = (id: string) => {
-    router.push(`/admin/auction/${id}`);
+    router.push(`/admin/startups/${id}`);
   };
 
-  if (loading) {
-    return <div>Loading...</div>; // Loading indicator
-  }
-
-  if (error) {
-    return <div>{error}</div>; // Display error if any
-  }
-
   return (
-    <div>
-      <h1>Auction Page</h1>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-6">Auction Page</h1>
       {startups.length > 0 ? (
-        startups.map((startup) => (
-          <div key={startup._id} onClick={() => handleRouteChange(startup._id)}>
-            <h2>{startup.name}</h2>
-            <p>{startup.description}</p>
-          </div>
-        ))
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {startups.map((startup) => (
+            <div
+              key={startup._id}
+              onClick={() => handleRouteChange(startup._id)}
+              className="border rounded-2xl p-4 hover:shadow-lg cursor-pointer transition-shadow"
+            >
+              <h2 className="text-xl font-semibold">{startup.name}</h2>
+              <p className="text-gray-600 mt-2">{startup.description}</p>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p>No startups available</p> // Handle the case where there are no startups
+        <p>No startups available</p>
       )}
     </div>
   );
