@@ -1,4 +1,5 @@
 import { Schema, model, models, Document, Types } from "mongoose";
+import Counter from "./Counter";
 
 export interface IStartup extends Document {
   startup_id: number;
@@ -12,7 +13,7 @@ export interface IStartup extends Document {
 
 const StartupSchema = new Schema<IStartup>(
   {
-    startup_id: { type: Number, unique: true, required: true },
+    startup_id: { type: Number, unique: true },
     name: { type: String, required: true },
     description: { type: String, required: true },
     valuation: { type: Number, required: true },
@@ -22,5 +23,18 @@ const StartupSchema = new Schema<IStartup>(
   },
   { timestamps: true }
 );
+
+// Middleware to auto-increment `startup_id`
+StartupSchema.pre("save", async function (next) {
+  if (!this.startup_id) {
+    const counter = await Counter.findByIdAndUpdate(
+      { _id: "startup_id" },
+      { $inc: { seq: 1 } },
+      { upsert: true, new: true }
+    );
+    this.startup_id = counter.seq;
+  }
+  next();
+});
 
 export default models.Startup || model<IStartup>("Startup", StartupSchema);
