@@ -18,7 +18,7 @@ interface Team {
   credits: number;
 }
 
-const predefinedBidAmounts = [1,2,3,4,5,6,7,8,9,10,11,100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500]; // Predefined bid amounts
+const predefinedBidAmounts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500];
 
 export default function StartupDetailsPage() {
   const [startup, setStartup] = useState<Startup | null>(null);
@@ -64,6 +64,16 @@ export default function StartupDetailsPage() {
   }, [params.id]);
 
   const handleBidClick = () => {
+    if (!startup) return;
+
+    setShowNotification(true);
+    setTimeout(() => setShowNotification(false), 3000);
+
+    setStartup((prev) => (prev ? { ...prev, currentBidAmount: currentBidAmount } : prev));
+    setBidIndex((prevIndex) => (prevIndex + 1) % predefinedBidAmounts.length);
+  };
+
+  const handlePurchase = () => {
     if (!selectedTeam || !startup) return;
 
     fetch(`/api/startups/${startup._id}/bid`, {
@@ -80,20 +90,16 @@ export default function StartupDetailsPage() {
       .then((data) => {
         if (data.success) {
           setShowNotification(true);
-          setTimeout(() => setShowNotification(false), 3000); // Hide after 3 seconds
+          setTimeout(() => setShowNotification(false), 3000);
 
           setSelectedTeam((prev) =>
             prev ? { ...prev, credits: prev.credits - currentBidAmount } : null
           );
-          setStartup((prev) =>
-            prev ? { ...prev, currentBidAmount: currentBidAmount } : prev
-          );
-          setBidIndex((prevIndex) => (prevIndex + 1) % predefinedBidAmounts.length);
         } else {
-          alert(data.error || "Failed to place bid");
+          alert(data.error || "Failed to complete purchase");
         }
       })
-      .catch(() => alert("Error placing bid"));
+      .catch(() => alert("Error completing purchase"));
   };
 
   return (
@@ -124,8 +130,17 @@ export default function StartupDetailsPage() {
         <p>Loading startup details...</p>
       )}
 
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold mb-2">Select Team:</h3>
+      <div className="bg-white p-6 rounded-xl shadow-md">
+        <button
+          onClick={handleBidClick}
+          className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+        >
+          Place Bid ${currentBidAmount}
+        </button>
+      </div>
+
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-2">Select Team for Purchase:</h3>
         <select
           onChange={(e) => {
             const selectedId = e.target.value;
@@ -147,15 +162,15 @@ export default function StartupDetailsPage() {
       </div>
 
       {selectedTeam && (
-        <div className="bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-lg font-semibold mb-2">
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">
             {selectedTeam.team_name}'s Credits: {selectedTeam.credits}
           </h3>
           <button
-            onClick={handleBidClick}
-            className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+            onClick={handlePurchase}
+            className="mt-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
           >
-            Place Bid ${currentBidAmount}
+            Purchase for ${currentBidAmount}
           </button>
         </div>
       )}
