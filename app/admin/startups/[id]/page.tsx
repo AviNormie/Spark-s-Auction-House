@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { Transition } from "@headlessui/react";
 
 interface Startup {
   _id: string;
@@ -17,15 +18,18 @@ interface Team {
   credits: number;
 }
 
-const predefinedBidAmounts = [1000, 5000, 10000, 20000]; // Predefined bid amounts
+const predefinedBidAmounts = [1,2,3,4,5,6,7,8,9,10,11,100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500]; // Predefined bid amounts
 
 export default function StartupDetailsPage() {
   const [startup, setStartup] = useState<Startup | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-  const [selectedBidAmount, setSelectedBidAmount] = useState<number>(predefinedBidAmounts[0]);
+  const [bidIndex, setBidIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
   const params = useParams();
+
+  const currentBidAmount = predefinedBidAmounts[bidIndex];
 
   // Fetch startup and teams data
   useEffect(() => {
@@ -50,7 +54,6 @@ export default function StartupDetailsPage() {
     fetch("/api/teams")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);  // Add this to check the response
         if (data.success) {
           setTeams(data.teams);
         } else {
@@ -63,7 +66,6 @@ export default function StartupDetailsPage() {
   const handleBidClick = () => {
     if (!selectedTeam || !startup) return;
 
-    // Place bid via API
     fetch(`/api/startups/${startup._id}/bid`, {
       method: "POST",
       headers: {
@@ -71,29 +73,22 @@ export default function StartupDetailsPage() {
       },
       body: JSON.stringify({
         teamId: selectedTeam._id,
-        bidAmount: selectedBidAmount,
+        bidAmount: currentBidAmount,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          alert("Bid placed successfully");
+          setShowNotification(true);
+          setTimeout(() => setShowNotification(false), 3000); // Hide after 3 seconds
 
-          // Update the selected team's credits immediately after the bid
-          setSelectedTeam((prevTeam) => {
-            if (prevTeam) {
-              return { ...prevTeam, credits: prevTeam.credits - selectedBidAmount };
-            }
-            return prevTeam;
-          });
-
-          // Optionally, you can also update the startup's current bid amount
-          setStartup((prevStartup) => {
-            if (prevStartup) {
-              return { ...prevStartup, currentBidAmount: selectedBidAmount };
-            }
-            return prevStartup;
-          });
+          setSelectedTeam((prev) =>
+            prev ? { ...prev, credits: prev.credits - currentBidAmount } : null
+          );
+          setStartup((prev) =>
+            prev ? { ...prev, currentBidAmount: currentBidAmount } : prev
+          );
+          setBidIndex((prevIndex) => (prevIndex + 1) % predefinedBidAmounts.length);
         } else {
           alert(data.error || "Failed to place bid");
         }
@@ -102,20 +97,35 @@ export default function StartupDetailsPage() {
   };
 
   return (
-    <div>
-      {error && <p>{error}</p>}
+    <div className="p-8 bg-gray-50 min-h-screen text-gray-800 relative">
+      {/* Notification Banner */}
+      <Transition
+        show={showNotification}
+        enter="transition-opacity duration-500"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-500"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 px-6 py-3 rounded-lg shadow-md">
+          Bid placed successfully!
+        </div>
+      </Transition>
+
+      {error && <p className="text-red-500">{error}</p>}
       {startup ? (
-        <div>
-          <h1>{startup.name}</h1>
-          <p>{startup.description}</p>
-          <p>Current Bid: ${startup.currentBidAmount}</p>
+        <div className="bg-white p-6 rounded-xl shadow-md mb-6">
+          <h1 className="text-2xl font-bold mb-2">{startup.name}</h1>
+          <p className="text-gray-600">{startup.description}</p>
+          <p className="mt-4 text-lg font-semibold">Current Bid: ${startup.currentBidAmount}</p>
         </div>
       ) : (
         <p>Loading startup details...</p>
       )}
 
-      <div>
-        <h3>Select Team:</h3>
+      <div className="mb-6">
+        <h3 className="text-lg font-semibold mb-2">Select Team:</h3>
         <select
           onChange={(e) => {
             const selectedId = e.target.value;
@@ -123,8 +133,11 @@ export default function StartupDetailsPage() {
             setSelectedTeam(team);
           }}
           value={selectedTeam?._id || ""}
+          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
         >
-          <option value="" disabled>Select a team</option>
+          <option value="" disabled>
+            Select a team
+          </option>
           {teams.map((team) => (
             <option key={team._id} value={team._id}>
               {team.team_name}
@@ -134,17 +147,16 @@ export default function StartupDetailsPage() {
       </div>
 
       {selectedTeam && (
-        <div>
-          <h3>{selectedTeam.team_name}'s Credits: {selectedTeam.credits}</h3>
-          <h3>Select Bid Amount:</h3>
-          <select onChange={(e) => setSelectedBidAmount(Number(e.target.value))} value={selectedBidAmount}>
-            {predefinedBidAmounts.map((amount) => (
-              <option key={amount} value={amount}>
-                ${amount}
-              </option>
-            ))}
-          </select>
-          <button onClick={handleBidClick}>Place Bid</button>
+        <div className="bg-white p-6 rounded-xl shadow-md">
+          <h3 className="text-lg font-semibold mb-2">
+            {selectedTeam.team_name}'s Credits: {selectedTeam.credits}
+          </h3>
+          <button
+            onClick={handleBidClick}
+            className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+          >
+            Place Bid ${currentBidAmount}
+          </button>
         </div>
       )}
     </div>
