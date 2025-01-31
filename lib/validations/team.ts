@@ -11,8 +11,9 @@ export const TeamSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   members: z
     .array(MemberSchema)
-    .min(2, "A team must have at least 2 members")
+    .min(1, "At least one member (creator) must be included") 
     .max(5, "A team cannot have more than 5 members"),
   credits: z.number().nonnegative().default(5000),
   purchased_startups: z.array(z.string()).optional(),
 });
+
