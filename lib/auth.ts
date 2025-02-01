@@ -24,7 +24,11 @@ export function verifyToken(req: NextRequest): DecodedToken {
     }
 
     // Ensure decoded contains the expected properties
-    if (!("team_id" in decoded) || !("team_name" in decoded) || !("enrollmentNumber" in decoded)) {
+    if (
+      !("team_id" in decoded) ||
+      !("team_name" in decoded) ||
+      !("enrollmentNumber" in decoded)
+    ) {
       throw new Error("Invalid token data.");
     }
 
