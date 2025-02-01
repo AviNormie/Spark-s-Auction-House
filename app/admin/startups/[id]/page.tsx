@@ -18,7 +18,7 @@ interface Team {
   credits: number;
 }
 
-const predefinedBidAmounts = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500];
+const predefinedBidAmounts = [100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500, 5000];
 
 export default function StartupDetailsPage() {
   const [startup, setStartup] = useState<Startup | null>(null);

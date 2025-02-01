@@ -5,11 +5,10 @@ import { TeamSchema, MemberSchema } from "@/lib/validations/team";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
-// Define the Zod schema for the request payload
 const SignupSchema = z.object({
   name: z.string().min(1, "Member name cannot be empty"),
   enrollmentNumber: z.string().min(5, "Enrollment number is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(3, "Password must be at least 3 characters"),
   team_name: z.string().min(3, "Team name must be at least 3 characters"),
   additionalMembers: z
     .array(MemberSchema)

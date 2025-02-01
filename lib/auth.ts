@@ -33,7 +33,7 @@ export function verifyToken(req: NextRequest): DecodedToken {
     }
 
     return decoded as DecodedToken;
-  } catch (error) {
+  } catch (error: any) {
     throw new Error("Unauthorized: Invalid or expired token.");
   }
 }
