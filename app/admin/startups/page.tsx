@@ -1,8 +1,14 @@
-// AuctionPage.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 
 interface Startup {
   _id: string;
@@ -10,7 +16,7 @@ interface Startup {
   description: string;
 }
 
-export default function StartupsPage() {
+export default function AuctionPage() {
   const [startups, setStartups] = useState<Startup[]>([]);
   const router = useRouter();
 
@@ -35,23 +41,31 @@ export default function StartupsPage() {
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Auction Page</h1>
+    <div className="container mx-auto py-8">
+      <h1 className="text-3xl font-bold mb-6">Auction Page</h1>
       {startups.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {startups.map((startup) => (
-            <div
+            <Card
               key={startup._id}
+              className="cursor-pointer hover:shadow-lg transition-shadow"
               onClick={() => handleRouteChange(startup._id)}
-              className="border rounded-2xl p-4 hover:shadow-lg cursor-pointer transition-shadow"
             >
-              <h2 className="text-xl font-semibold">{startup.name}</h2>
-              <p className="text-gray-600 mt-2">{startup.description}</p>
-            </div>
+              <CardHeader>
+                <CardTitle>{startup.name}</CardTitle>
+                <CardDescription>{startup.description}</CardDescription>
+              </CardHeader>
+            </Card>
           ))}
         </div>
       ) : (
-        <p>No startups available</p>
+        <Card>
+          <CardContent className="pt-6">
+            <p className="text-center text-muted-foreground">
+              No startups available
+            </p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
