@@ -83,13 +83,22 @@ export default function RegistrationPage() {
           variant: "destructive",
         });
       }
-    } catch (error: any) {
-      console.error("Axios Error:", error.response?.data || error.message);
-      toast({
-        title: "Registration Failed",
-        description: `An error occurred: ${error.response?.data?.error || error.message}`,
-        variant: "destructive",
-      });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios Error:", error.response?.data || error.message);
+        toast({
+          title: "Registration Failed",
+          description: `An error occurred: ${error.response?.data?.error || error.message}`,
+          variant: "destructive",
+        });
+      } else {
+        console.error("Unexpected Error:", error);
+        toast({
+          title: "Registration Failed",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

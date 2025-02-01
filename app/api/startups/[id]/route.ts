@@ -17,6 +17,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     return NextResponse.json({ success: true, startup }, { status: 200 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json({ success: false, error: "Failed to fetch startup" }, { status: 500 });
   }
 }

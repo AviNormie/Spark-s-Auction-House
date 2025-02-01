@@ -23,7 +23,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => {
       throw new Error("Invalid JSON format");
     });
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { startup_id, ...dataWithoutId } = body;
     
     const validationResult = StartupSchema.safeParse(dataWithoutId);
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
     await newStartup.save();
 
     return NextResponse.json({ success: true, startup: newStartup }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("POST /api/startups Error:", error);
-    return NextResponse.json({ success: false, error: error.message || "Failed to add startup" }, { status: 500 });
+    return NextResponse.json({ success: false || "Failed to add startup" }, { status: 500 });
   }
 }

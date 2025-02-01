@@ -48,14 +48,22 @@ export default function LoginPage() {
       });
 
       router.push("/dashboard");
-    } catch (error: any) {
-      console.error("Login error:", error);
-      toast({
-        title: "Login Failed",
-        description: error.response?.data?.error || "Invalid credentials",
-        variant: "destructive",
-      });
-    }
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        toast({
+          title: "Login Failed",
+          description: error.response?.data?.error || "Invalid credentials",
+          variant: "destructive",
+        });
+      } else {
+        console.error("Unexpected error:", error);
+        toast({
+          title: "Login Failed",
+          description: "An unexpected error occurred.",
+          variant: "destructive",
+        });
+      }
+    }    
   };
 
   return (
@@ -101,7 +109,7 @@ export default function LoginPage() {
                 Login
               </Button>
               <div className="text-center text-sm">
-                Don't have an account?{" "}
+                Do not have an account?{" "}
                 <Link href="/registration" className="text-primary underline">
                   Sign up
                 </Link>

@@ -27,13 +27,6 @@ export async function POST(req: NextRequest) {
         password?: string;
     }
 
-    interface TeamType {
-        team_id: string;
-        team_name: string;
-        members: Member[];
-        password: string;
-    }
-
     const member: Member | undefined = team.members.find((m: Member) => m.enrollmentNumber === enrollmentNumber);
     if (!member) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
@@ -48,12 +41,13 @@ export async function POST(req: NextRequest) {
     // Generate JWT token
     const token = jwt.sign(
       { team_id: team.team_id, team_name: team.team_name, enrollmentNumber },
-      process.env.JWT_SECRET!,
+      "hehe",
       { expiresIn: "7d" }
     );
 
     return NextResponse.json({ message: "Login successful", token }, { status: 200 });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to login." },
       { status: 400 }

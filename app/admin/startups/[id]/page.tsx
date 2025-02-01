@@ -164,7 +164,7 @@ export default function StartupDetailsPage() {
       {selectedTeam && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold">
-            {selectedTeam.team_name}'s Credits: {selectedTeam.credits}
+            {selectedTeam.team_name} s Credits: {selectedTeam.credits}
           </h3>
           <button
             onClick={handlePurchase}
