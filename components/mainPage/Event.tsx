@@ -88,7 +88,7 @@ export function Event() {
             <div className=" p-10 md:p-14 rounded-2xl fade-in w-full max-w-[1100px]">
               <h2 className="text-3xl md:text-4xl font-semibold">Details</h2>
               <p className="mt-4 text-xl md:text-2xl">
-                📅 Date: <span className="text-gray-300">7'th Feb</span>
+                📅 Date: <span className="text-gray-300">7th Feb</span>
               </p>
               <p className="mt-4 text-xl md:text-2xl">
                 📍 Venue: <span className="text-gray-300">A-block Hatchery</span>

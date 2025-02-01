@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import Team from "@/models/Team";
-import { TeamSchema, MemberSchema } from "@/lib/validations/team";
+import { MemberSchema } from "@/lib/validations/team";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
 
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     // Generate JWT token
     const token = jwt.sign(
       { team_id: newTeam.team_id, team_name: newTeam.team_name, enrollmentNumber },
-      process.env.JWT_SECRET!,
+      "hehe",
       { expiresIn: "7d" }
     );
 
