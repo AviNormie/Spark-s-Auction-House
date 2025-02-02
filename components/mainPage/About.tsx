@@ -16,7 +16,7 @@ export default function About () {
       {/* Description */}
       <p className="max-w-3xl text-lg font-medium text-gray-300">
         Startup Auction is a one-of-a-kind event where budding entrepreneurs pitch their groundbreaking ideas, 
-        and investors bid to back the next big thing! Whether you're a startup looking for funding or an investor 
+        and investors bid to back the next big thing! Whether you are a startup looking for funding or an investor 
         seeking promising ventures, this is your stage.
       </p>
     </section>
