@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -20,6 +19,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { NavbarTwo } from "@/components/startupUi/NavbarTwo";
 
 interface Startup {
   _id: string;
@@ -75,7 +75,9 @@ export default function AuctionPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4 min-h-screen bg-background text-foreground">
+    <main className="relative min-h-screen bg-[#f0ecec] flex flex-col overflow-hidden">
+    <NavbarTwo/>
+    <div className="container max-w-[85rem] mt-[5rem] mx-auto py-6  min-h-screen bg-background text-foreground">
       <h1 className="text-4xl sm:text-5xl font-extrabold text-center mt-8 mb-12">
         Spark Startup Auction
       </h1>
@@ -229,5 +231,6 @@ export default function AuctionPage() {
         </DialogContent>
       </Dialog>
     </div>
+    </main>
   );
 }
