@@ -13,6 +13,7 @@ export function verifyAuth(req: NextRequest) {
     const token = authHeader.split(" ")[1];
     return jwt.verify(token, SECRET_KEY) as { team_id: number; team_name: string; enrollmentNumber: string };
   } catch (error) {
+    console.error("Error verifying token:", error);
     return null;
   }
 }
