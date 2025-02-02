@@ -19,10 +19,10 @@ export default function Socials() {
 
         {/* Social Icons */}
         <div className="flex justify-center gap-6 text-2xl">
-          <a href="#" className="hover:text-gray-300 transition"><FaFacebookF /></a>
+          <a href="https://www.facebook.com/share/165SugqyjC/" className="hover:text-gray-300 transition"><FaFacebookF /></a>
           <a href="#" className="hover:text-gray-300 transition"><FaTwitter /></a>
-          <a href="#" className="hover:text-gray-300 transition"><FaInstagram /></a>
-          <a href="#" className="hover:text-gray-300 transition"><FaLinkedinIn /></a>
+          <a href="https://www.instagram.com/spark_ecell.bu?igsh=MWNpcXFzdzQxMXdjNQ==" className="hover:text-gray-300 transition"><FaInstagram /></a>
+          <a href="https://www.linkedin.com/company/spark-ecell-bu/" className="hover:text-gray-300 transition"><FaLinkedinIn /></a>
         </div>
       </div>
     </section>

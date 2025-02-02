@@ -7,8 +7,10 @@ import Socials from "@/components/mainPage/Socials";
 
 export default function Home() {
   return (
-   <>
-    <main className="min-h-screen bg-black flex flex-col">
+    <main className="relative min-h-screen bg-black flex flex-col overflow-hidden">
+      {/* Moving dots background */}
+      <div className="absolute inset-0 bg-dots pointer-events-none"></div>
+
       <Navbar />
       <Hero />
       <Event />
@@ -16,6 +18,5 @@ export default function Home() {
       <FeatureBox />
       <Socials />
     </main>
-   </>
   );
 }

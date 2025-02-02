@@ -32,7 +32,7 @@ export function Hero() {
         width={500}
         height={150}
         priority
-        className="mb-4 px-4 sm:w-[300px] sm:h-auto lg:w-[60rem] lg:h-auto absolute top-[14.5rem] transform -translate-y-12"
+        className="mb-4 px-4 pt-16 sm:w-[300px] sm:h-auto lg:w-[60rem] lg:h-auto absolute top-[14.5rem] transform -translate-y-12"
       />
       
       {/* Hero Text */}
