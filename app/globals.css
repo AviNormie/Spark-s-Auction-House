@@ -70,3 +70,22 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes moveDots {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 0 -150px;
+  }
+}
+
+/* Creates a structured dot pattern with more spacing */
+.bg-dots {
+  background-image: radial-gradient(white 1px, transparent 2px),
+                    radial-gradient(white 1px, transparent 2px);
+  background-size: 60px 60px;
+  background-position: 0 0, 60px 60px; /* Staggered effect for pattern */
+  animation: moveDots 15s linear infinite;
+  opacity: 0.3;
+}

@@ -2,10 +2,11 @@ import Image from "next/image";
 
 export default function About () {
   return (
-    <section className="flex flex-col items-center justify-center text-center bg-black text-white pb-24 px-4">
+    <section id="about" className="flex flex-col items-center justify-center text-center bg-black text-white pb-24 px-4">
       {/* Title as an image */}
-      <div className="relative w-[500px] h-[100px] mb-6">
+      <div className="relative w-[500px] h-[100px] mb-6 max-md:w-[350px] mt-12">
         <Image
+        className=" "
           src="/about.png"
           alt="What is Startup Auction?"
           layout="fill"
