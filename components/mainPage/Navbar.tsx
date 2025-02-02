@@ -15,7 +15,7 @@ export function Navbar() {
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className="hidden md:flex fixed top-12 left-1/2 -translate-x-1/2 text-white rounded-full px-10 py-3 flex items-center justify-between shadow-lg w-fit max-w-full gap-10 z-50">
+      <nav className="hidden md:flex fixed top-12 left-1/2 -translate-x-1/2 text-white rounded-full px-10 py-3 items-center justify-between shadow-lg w-fit max-w-full gap-10 z-50">
         <button onClick={() => handleScroll("spark")} className="nav-link group relative">
           Spark
           <span className="absolute left-0 bottom-[-3px] w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
@@ -41,7 +41,7 @@ export function Navbar() {
       </nav>
 
       {/* Mobile "Stair-Step" Layout */}
-      <div className="md:hidden absolute top-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white text-lg w-full">
+      <div className="md:hidden absolute top-12 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-white text-lg w-full z-50">
         {/* First Row */}
         <div className="flex justify-between w-[80%] mb-2">
           <button onClick={() => handleScroll("spark")} className="stair-link group relative">

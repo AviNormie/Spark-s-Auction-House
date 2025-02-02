@@ -8,11 +8,11 @@ export function Event() {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
-    const targetDate = new Date("2025-02-10T18:00:00").getTime();
+    const targetDate = new Date("2025-02-07T18:00:00").getTime(); 
     const interval = setInterval(() => {
       const now = new Date().getTime();
       const difference = targetDate - now;
-
+  
       if (difference > 0) {
         setTimeLeft({
           days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -24,10 +24,10 @@ export function Event() {
         clearInterval(interval);
       }
     }, 1000);
-
+  
     return () => clearInterval(interval);
   }, []);
-
+  
   useEffect(() => {
     gsap.fromTo(
       ".fade-in",
@@ -56,16 +56,18 @@ export function Event() {
         <div className="w-full flex flex-col gap-6 md:gap-10 items-center md:items-center pr-0 md:pr-12">
           {/* Hero Section with Background Image */}
           <div
-            className="relative h-[25rem] opacity-35 bg-cover bg-center p-8 md:p-16 rounded-3xl fade-in shadow-lg w-full"
-            style={{ backgroundImage: "url('/event-bg-1.jpeg')" }}
-          >
-            <h1 className="text-xl md:text-4xl font-bold text-gray-200 mr-2">
-              Spark’s Auction House: <br /> Where Innovation Meets Investment
-            </h1>
-            <button className="mt-4 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition w-full md:w-auto">
-              Register Now
-            </button>
+          className="relative h-[25rem] opacity-35 bg-cover bg-center p-8 md:p-16 rounded-3xl fade-in shadow-lg w-full flex flex-col justify-end"
+          style={{ backgroundImage: "url('/event-bg-1.jpeg')" }}
+        >
+          <h1 className="text-xl md:text-4xl font-bold text-gray-200 opacity-85 mr-2">
+            Spark-s Auction House: <br /> Where Innovation Meets Investment
+          </h1>
+          <button className="mt-4 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition w-auto max-w-[200px]">
+  Register Now
+</button>
+
           </div>
+
   
           {/* Countdown Timer */}
           <div className="fade-in text-center text-3xl md:text-5xl font-bold mt-4">
