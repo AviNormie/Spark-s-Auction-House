@@ -1,6 +1,9 @@
+import About from "@/components/mainPage/About";
 import { Event } from "@/components/mainPage/Event";
+import FeatureBox from "@/components/mainPage/FeatureBox";
 import { Hero } from "@/components/mainPage/Hero";
 import { Navbar } from "@/components/mainPage/Navbar";
+import Socials from "@/components/mainPage/Socials";
 
 export default function Home() {
   return (
@@ -9,6 +12,9 @@ export default function Home() {
       <Navbar />
       <Hero />
       <Event />
+      <About />
+      <FeatureBox />
+      <Socials />
     </main>
    </>
   );

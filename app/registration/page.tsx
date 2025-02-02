@@ -205,32 +205,36 @@ export default function RegistrationPage() {
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-gray-300">
-                              Password
-                            </FormLabel>
-                            <FormControl>
-                              <div className="relative">
-                                <Input
-                                  type="password"
-                                  placeholder="Enter your password"
-                                  {...field}
-                                  className="pl-10 bg-gray-700 border-gray-600 text-white"
-                                />
-                                <User
-                                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                                  size={18}
-                                />
-                              </div>
-                            </FormControl>
-                            <FormMessage className="text-red-400" />
-                          </FormItem>
-                        )}
-                      />
+                     <FormField
+  control={form.control}
+  name="password"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel className="text-gray-300">Password</FormLabel>
+      <FormControl>
+        <div className="relative">
+          <Input
+            type="password"
+            placeholder="Enter your password"
+            {...field}
+            className="pl-10 bg-gray-700 border-gray-600 text-white"
+            onChange={(e) => {
+              field.onChange(e); 
+              form.trigger("password"); 
+            }}
+          />
+          <User
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={18}
+          />
+        </div>
+      </FormControl>
+      <FormMessage className="text-red-400" />
+    </FormItem>
+  )}
+/>
+
+
                     </>
                   )}
                   {step === 1 && (
