@@ -6,7 +6,7 @@ export default function Socials() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50"
-        style={{ backgroundImage: "url('/socials-bg.jpg')" }} // Update with actual image path
+        style={{ backgroundImage: "url('/event-bg.png')" }} // Update with actual image path
       >
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       </div>
