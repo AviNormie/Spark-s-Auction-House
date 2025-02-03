@@ -18,7 +18,9 @@ interface Team {
   credits: number;
 }
 
-const predefinedBidAmounts = [100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500, 5000];
+const predefinedBidAmounts = [
+  100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500, 5000,
+];
 
 export default function StartupDetailsPage() {
   const [startup, setStartup] = useState<Startup | null>(null);
@@ -27,11 +29,15 @@ export default function StartupDetailsPage() {
   const [bidIndex, setBidIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const params = useParams();
 
+  // Current bid amount is the one at bidIndex.
   const currentBidAmount = predefinedBidAmounts[bidIndex];
+  // The Place Bid button shows the next amount.
+  const nextBidAmount =
+    predefinedBidAmounts[(bidIndex + 1) % predefinedBidAmounts.length];
 
-  // Fetch startup and teams data
   useEffect(() => {
     const startupId = params.id;
     if (!startupId) {
@@ -45,34 +51,29 @@ export default function StartupDetailsPage() {
         if (data.success) {
           setStartup(data.startup);
         } else {
-          setError("Failed to fetch startup");
+          setError(data.error || "Failed to fetch startup");
         }
       })
       .catch(() => setError("Error fetching startup"));
 
-    // Fetch all teams
     fetch("/api/teams")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           setTeams(data.teams);
         } else {
-          setError("Failed to fetch teams");
+          setError(data.error || "Failed to fetch teams");
         }
       })
       .catch(() => setError("Error fetching teams"));
   }, [params.id]);
 
-  const handleBidClick = () => {
-    if (!startup) return;
-
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 3000);
-
-    setStartup((prev) => (prev ? { ...prev, currentBidAmount: currentBidAmount } : prev));
+  // Clicking "Place Bid" moves to the next bid amount.
+  const handlePlaceBid = () => {
     setBidIndex((prevIndex) => (prevIndex + 1) % predefinedBidAmounts.length);
   };
 
+  // When purchasing, the currentBidAmount is used.
   const handlePurchase = () => {
     if (!selectedTeam || !startup) return;
 
@@ -92,6 +93,7 @@ export default function StartupDetailsPage() {
           setShowNotification(true);
           setTimeout(() => setShowNotification(false), 3000);
 
+          // Deduct the bid amount from the team's credits.
           setSelectedTeam((prev) =>
             prev ? { ...prev, credits: prev.credits - currentBidAmount } : null
           );
@@ -102,9 +104,12 @@ export default function StartupDetailsPage() {
       .catch(() => alert("Error completing purchase"));
   };
 
+  const filteredTeams = teams.filter((team) =>
+    team.team_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen text-gray-800 relative">
-      {/* Notification Banner */}
       <Transition
         show={showNotification}
         enter="transition-opacity duration-500"
@@ -114,7 +119,7 @@ export default function StartupDetailsPage() {
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 px-6 py-3 rounded-lg shadow-md">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-100 text-green-800 px-6 py-3 rounded-lg shadow-md">
           Bid placed successfully!
         </div>
       </Transition>
@@ -124,7 +129,9 @@ export default function StartupDetailsPage() {
         <div className="bg-white p-6 rounded-xl shadow-md mb-6">
           <h1 className="text-2xl font-bold mb-2">{startup.name}</h1>
           <p className="text-gray-600">{startup.description}</p>
-          <p className="mt-4 text-lg font-semibold">Current Bid: ${startup.currentBidAmount}</p>
+          <p className="mt-4 text-lg font-semibold">
+            Current Bid: ${currentBidAmount}
+          </p>
         </div>
       ) : (
         <p>Loading startup details...</p>
@@ -132,43 +139,47 @@ export default function StartupDetailsPage() {
 
       <div className="bg-white p-6 rounded-xl shadow-md">
         <button
-          onClick={handleBidClick}
+          onClick={handlePlaceBid}
           className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
         >
-          Place Bid ${currentBidAmount}
+          Place Bid ${nextBidAmount}
         </button>
       </div>
 
       <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2">Select Team for Purchase:</h3>
-        <select
-          onChange={(e) => {
-            const selectedId = e.target.value;
-            const team = teams.find((t) => t._id === selectedId) || null;
-            setSelectedTeam(team);
-          }}
-          value={selectedTeam?._id || ""}
-          className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400"
-        >
-          <option value="" disabled>
-            Select a team
-          </option>
-          {teams.map((team) => (
-            <option key={team._id} value={team._id}>
-              {team.team_name}
-            </option>
-          ))}
-        </select>
+        <h3 className="text-lg font-semibold mb-2">Search Team for Purchase:</h3>
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search teams..."
+          className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400"
+        />
+        <div className="space-y-2">
+          {filteredTeams.length > 0 ? (
+            filteredTeams.map((team) => (
+              <div
+                key={team._id}
+                className="p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
+                onClick={() => setSelectedTeam(team)}
+              >
+                {team.team_name}
+              </div>
+            ))
+          ) : (
+            <p>No teams found</p>
+          )}
+        </div>
       </div>
 
       {selectedTeam && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold">
-            {selectedTeam.team_name} s Credits: {selectedTeam.credits}
+            {selectedTeam.team_name}'s Credits: {selectedTeam.credits}
           </h3>
           <button
             onClick={handlePurchase}
-            className="mt-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
+            className="fixed bottom-4 right-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
           >
             Purchase for ${currentBidAmount}
           </button>
