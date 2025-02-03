@@ -34,7 +34,7 @@ export default function TeamDashboard() {
           throw new Error("No authentication token found.");
         }
 
-        const response = await axios.get<{ team: TeamData }>("http://localhost:3000/api/teams/data", {
+        const response = await axios.get<{ team: TeamData }>("/api/teams/data", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
