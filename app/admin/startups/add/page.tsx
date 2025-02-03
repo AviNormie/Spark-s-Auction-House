@@ -59,6 +59,7 @@ export default function StartupForm() {
     //   console.log("Sending data to API:", formattedData);
 
       const response = await axios.post("/api/startups", formattedData);
+      console.log("API response:", response.data);
     //   console.log("API Response:", response.data);
 
       toast.success("Startup added successfully!");
