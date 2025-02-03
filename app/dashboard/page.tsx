@@ -34,15 +34,19 @@ export default function TeamDashboard() {
           throw new Error("No authentication token found.");
         }
 
-        const response = await axios.get("http://localhost:3000/api/teams/data", {
+        const response = await axios.get<{ team: TeamData }>("http://localhost:3000/api/teams/data", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
         setTeamData(response.data.team);
-      } catch (err: any) {
-        toast.error(err.response?.data?.error || "Failed to fetch team data.");
+      } catch (err: unknown) {
+        if (axios.isAxiosError(err)) {
+          toast.error(err.response?.data?.error || "Failed to fetch team data.");
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -68,9 +72,11 @@ export default function TeamDashboard() {
           <CardTitle>Team Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-lg font-semibold">Team Name: {teamData?.team_name}</p>
-          <p className="text-gray-500">Team ID: {teamData?.team_id}</p>
-          <p className="text-gray-500">Created At: {new Date(teamData?.createdAt!).toLocaleDateString()}</p>
+          <p className="text-lg font-semibold">Team Name: {teamData?.team_name ?? "N/A"}</p>
+          <p className="text-gray-500">Team ID: {teamData?.team_id ?? "N/A"}</p>
+          <p className="text-gray-500">
+            Created At: {teamData?.createdAt ? new Date(teamData.createdAt).toLocaleDateString() : "N/A"}
+          </p>
         </CardContent>
       </Card>
 
@@ -86,7 +92,7 @@ export default function TeamDashboard() {
                 <span className="font-medium">{member.name}</span>
                 <Badge>{member.enrollmentNumber}</Badge>
               </li>
-            ))}
+            )) ?? <p className="text-gray-500">No members found.</p>}
           </ul>
         </CardContent>
       </Card>
@@ -97,7 +103,7 @@ export default function TeamDashboard() {
           <CardTitle>Team Credits</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold text-green-600">{teamData?.credits} Credits</p>
+          <p className="text-2xl font-bold text-green-600">{teamData?.credits ?? 0} Credits</p>
         </CardContent>
       </Card>
 
