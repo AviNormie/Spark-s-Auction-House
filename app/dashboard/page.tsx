@@ -1,129 +1,230 @@
 "use client";
+import React, { useState, useEffect } from "react";
+import {
+  Users,
+  Activity,
+  LayoutDashboard,
+  Search,
+  Rocket,
+  Plus,
+} from "lucide-react";
 
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-hot-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+interface Startup {
+  id: string;
+}
 
-interface Member {
+
+interface TeamMember {
   name: string;
   enrollmentNumber: string;
 }
 
 interface TeamData {
+  _id: string;
   team_id: number;
   team_name: string;
-  members: Member[];
+  members: TeamMember[];
   credits: number;
-  purchased_startups: string[];
+  purchased_startups: Startup[];
   createdAt: string;
   updatedAt: string;
 }
 
-export default function TeamDashboard() {
-  const [teamData, setTeamData] = useState<TeamData | null>(null);
-  const [loading, setLoading] = useState(true);
+const fetchTeamData = async (): Promise<TeamData | null> => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.error("No auth token found.");
+      return null;
+    }
+
+    const response = await fetch("/api/teams/data", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch team data. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (!data || !data.team) {
+      throw new Error("Invalid team data received");
+    }
+
+    return data.team;
+  } catch (error) {
+    console.error("Error fetching team data:", error);
+    return null;
+  }
+};
+
+
+
+function App() {
+  const [team, setTeam] = useState<TeamData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const fetchTeamData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          throw new Error("No authentication token found.");
-        }
-
-        const response = await axios.get<{ team: TeamData }>("/api/teams/data", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setTeamData(response.data.team);
-      } catch (err: unknown) {
-        if (axios.isAxiosError(err)) {
-          toast.error(err.response?.data?.error || "Failed to fetch team data.");
-        } else {
-          toast.error("An unexpected error occurred.");
-        }
-      } finally {
-        setLoading(false);
-      }
+    const getData = async () => {
+      const data = await fetchTeamData();
+      setTeam(data);
+      setLoading(false);
     };
-
-    fetchTeamData();
+    getData();
   }, []);
 
+
+  const handleAddMember = async () => {
+    if (!team) return;
+  
+    const memberName = prompt("Enter member name:");
+    const enrollmentNumber = prompt("Enter enrollment number:");
+  
+    if (!memberName || !enrollmentNumber) {
+      alert("Both name and enrollment number are required.");
+      return;
+    }
+  
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You are not authenticated.");
+        return;
+      }
+  
+      const response = await fetch("/api/teams/add-member", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: memberName,
+          enrollmentNumber,
+        }),
+      });
+  
+      const result = await response.json();
+  
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to add member.");
+      }
+  
+      alert(result.message);
+      setTeam(result.team); // Update state with new team data
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        alert(error.message);
+      } else {
+        alert("An unexpected error occurred.");
+      }
+    }
+    
+  };
+  
+
   if (loading) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Skeleton className="w-96 h-32 mb-4" />
-        <Skeleton className="w-80 h-20" />
-      </div>
-    );
+    return <div className="text-center p-10 text-white">Loading...</div>;
+  }
+
+  if (!team) {
+    return <div className="text-center p-10 text-red-500">Failed to load team data.</div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Team Info */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg font-semibold">Team Name: {teamData?.team_name ?? "N/A"}</p>
-          <p className="text-gray-500">Team ID: {teamData?.team_id ?? "N/A"}</p>
-          <p className="text-gray-500">
-            Created At: {teamData?.createdAt ? new Date(teamData.createdAt).toLocaleDateString() : "N/A"}
-          </p>
-        </CardContent>
-      </Card>
+    <div className="min-h-screen bg-black text-gray-100 flex flex-col lg:flex-row">
+      {/* Sidebar */}
+      <aside className="relative w-full lg:w-64 glass-effect border-b lg:border-r border-white/10">
+        <div className="p-4 lg:p-6">
+          <div className="flex items-center space-x-3">
+            <Activity className="h-6 lg:h-8 w-6 lg:w-8 text-blue-400" />
+            <h1 className="text-lg lg:text-xl font-bold text-white">Dashboard</h1>
+          </div>
+        </div>
+        <nav className="mt-4 lg:mt-6 px-3 hidden lg:block">
+          <a href="#" className="sidebar-link active">
+            <LayoutDashboard className="h-5 w-5" />
+            <span>Overview</span>
+          </a>
+          <a href="#" className="sidebar-link">
+            <Rocket className="h-5 w-5" />
+            <span>Startups</span>
+          </a>
+        </nav>
+      </aside>
 
-      {/* Members */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Members</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2">
-            {teamData?.members.map((member, index) => (
-              <li key={index} className="flex justify-between bg-gray-100 p-2 rounded-md">
-                <span className="font-medium">{member.name}</span>
-                <Badge>{member.enrollmentNumber}</Badge>
-              </li>
-            )) ?? <p className="text-gray-500">No members found.</p>}
-          </ul>
-        </CardContent>
-      </Card>
+      <div className="flex-1 flex flex-col relative">
+        {/* Header */}
+        <header className="glass-effect border-b border-white/10">
+          <div className="px-4 lg:px-6 py-3 lg:py-4">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center px-3 py-2 rounded-lg bg-white/5 w-full lg:w-auto">
+                <Search className="h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search startups..."
+                  className="ml-3 bg-transparent border-none focus:outline-none text-sm w-full"
+                />
+              </div>
+            </div>
+          </div>
+        </header>
 
-      {/* Credits */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Team Credits</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-2xl font-bold text-green-600">{teamData?.credits ?? 0} Credits</p>
-        </CardContent>
-      </Card>
+        {/* Main Content */}
+        <main className="flex-1 overflow-auto p-4 lg:p-6">
+          <h2 className="text-2xl lg:text-3xl font-bold mb-2">Welcome back, {team.team_name}!</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="stats-card">
+              <h3 className="text-base lg:text-lg font-medium">Team Members</h3>
+              <p className="text-2xl lg:text-3xl font-bold mb-2">{team.members.length}</p>
+            </div>
+            <div className="stats-card">
+              <h3 className="text-base lg:text-lg font-medium">Credits</h3>
+              <p className="text-2xl lg:text-3xl font-bold mb-2">{team.credits}</p>
+            </div>
+          </div>
 
-      {/* Purchased Startups */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Purchased Startups</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {teamData?.purchased_startups.length ? (
-            <ul className="list-disc pl-5">
-              {teamData.purchased_startups.map((startup, index) => (
-                <li key={index} className="text-gray-700">{startup}</li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-500">No startups purchased yet.</p>
-          )}
-        </CardContent>
-      </Card>
+          {/* Team Members Table */}
+          <div className="glass-effect rounded-xl p-6">
+            <div className="flex justify-between mb-6">
+              <h2 className="text-lg lg:text-xl font-bold flex items-center">
+                <Users className="h-5 w-5 mr-2 text-blue-400" /> Team Members
+              </h2>
+              <button
+                onClick={handleAddMember}
+                className="px-4 py-2 bg-blue-500 rounded-lg text-sm font-medium hover:bg-blue-600"
+              >
+                <Plus className="h-4 w-4" /> Add Member
+              </button>
+            </div>
+            <table className="team-table min-w-full">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Enrollment Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                {team.members.map((member) => (
+                  <tr key={member.enrollmentNumber}>
+                    <td>{member.name}</td>
+                    <td>{member.enrollmentNumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
+
+export default App;
