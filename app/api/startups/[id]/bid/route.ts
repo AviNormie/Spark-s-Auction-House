@@ -56,14 +56,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Insufficient credits" }, { status: 400 });
     }
 
-    // Update the startup's owner_team field and bid information
+    // Log the initial data before the update
+    console.log("Before Bid:");
+    console.log("Team Credits:", team.credits);
+    console.log("Startup Current Bid:", startup.currentBidAmount);
+    console.log("Team Purchased Startups:", team.purchased_startups);
+
+    // Update the startup's owner_team and bid information
     startup.owner_team = team._id;
     startup.highest_bid = Math.max(startup.highest_bid || 0, bidAmount);
     startup.currentBidAmount = bidAmount;
+
+    // Save the startup changes
     await startup.save();
 
     // Deduct credits from the team
     team.credits -= bidAmount;
+
+    // Add the startup to the team's purchased_startups array
+    team.purchased_startups.push(startup._id);
+
+    // Save the team changes
     await team.save();
 
     return NextResponse.json({ success: true, message: "Bid placed successfully" }, { status: 200 });
