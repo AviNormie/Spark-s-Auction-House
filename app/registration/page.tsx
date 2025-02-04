@@ -370,6 +370,13 @@ export default function RegistrationPage() {
                   </Button>
                 )}
               </div>
+              <p className="text-gray-400 text-center mt-4">
+  Already registered?{" "}
+  <a href="/login" className="text-blue-400 hover:underline">
+    Login here
+  </a>
+</p>
+
             </form>
           </Form>
         </div>

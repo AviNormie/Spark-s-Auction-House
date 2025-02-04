@@ -11,12 +11,20 @@ export function Navbar() {
       section.scrollIntoView({ behavior: "smooth" });
     }
   };
+  const handleHomeClick = () => {
+    console.log("this handle home click was called")
+    router.push("/");
+    router.refresh(); 
+    // setTimeout(() => {
+    //   window.location.href = "/";
+    // }, 100);
+  };
 
   return (
     <>
       {/* Desktop Navbar */}
       <nav className="hidden md:flex fixed top-12 left-1/2 -translate-x-1/2 text-white rounded-full px-10 py-3 items-center justify-between shadow-lg w-fit max-w-full gap-10 z-50">
-        <button onClick={() => handleScroll("spark")} className="nav-link group relative">
+       <button onClick={handleHomeClick} className="nav-link group relative">
           Spark
           <span className="absolute left-0 bottom-[-3px] w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
         </button>

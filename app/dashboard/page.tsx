@@ -2,12 +2,12 @@
 import React, { useState, useEffect } from "react";
 import {
   Users,
-  Activity,
   LayoutDashboard,
   Search,
   Rocket,
   Plus,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Startup {
   id: string;
@@ -64,10 +64,8 @@ const fetchTeamData = async (): Promise<TeamData | null> => {
     return null;
   }
 };
-
-
-
 function App() {
+  const router = useRouter();
   const [team, setTeam] = useState<TeamData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -79,7 +77,12 @@ function App() {
     };
     getData();
   }, []);
-
+useEffect(()=>{
+  const token = localStorage.getItem("token");
+  if (!token) {
+    router.push("/registration");
+  }
+})
 
   const handleAddMember = async () => {
     if (!team) return;
@@ -131,7 +134,7 @@ function App() {
   
 
   if (loading) {
-    return <div className="text-center p-10 text-white">Loading...</div>;
+    return <div className="text-center p-10 text-black">Loading...</div>;
   }
 
   if (!team) {
@@ -143,9 +146,12 @@ function App() {
       {/* Sidebar */}
       <aside className="relative w-full lg:w-64 glass-effect border-b lg:border-r border-white/10">
         <div className="p-4 lg:p-6">
-          <div className="flex items-center space-x-3">
-            <Activity className="h-6 lg:h-8 w-6 lg:w-8 text-blue-400" />
-            <h1 className="text-lg lg:text-xl font-bold text-white">Dashboard</h1>
+          <div onClick={()=>{
+            router.push("/")
+          }} className="flex items-center space-x-3 cursor-pointer">
+            
+            {/* <Activity className="h-6 lg:h-8 w-6 lg:w-8 text-blue-400" /> */}
+          <h1 className="text-lg lg:text-xl font-bold text-white">Spark</h1>
           </div>
         </div>
         <nav className="mt-4 lg:mt-6 px-3 hidden lg:block">
