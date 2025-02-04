@@ -319,27 +319,29 @@ export default function RegistrationPage() {
                           )}
                         </div>
                       ))}
-                      {fields.length < 4 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() =>
-                            append({ name: "", enrollmentNumber: "" })
-                          }
-                          className="mt-4 w-full"
-                        >
-                          Add Member
-                        </Button>
-                      )}
+                  {fields.length < 4 && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => append({ name: "", enrollmentNumber: "" })}
+                        className="mt-4 w-full bg-black text-white border border-gray-600 hover:bg-gray-900"
+                      >
+                        Add Member
+                      </Button>
+                    )}
                     </div>
                   )}
                 </motion.div>
               </AnimatePresence>
 
               <div className="flex justify-between mt-8 space-x-2">
-                {step > 0 && (
-                  <Button type="button" onClick={prevStep} variant="outline">
+              {step > 0 && (
+                  <Button
+                    type="button"
+                    onClick={prevStep}
+                    className="bg-black text-white border border-gray-600 hover:bg-gray-900"
+                  >
                     <ChevronLeft className="mr-2 h-4 w-4" /> Previous
                   </Button>
                 )}
