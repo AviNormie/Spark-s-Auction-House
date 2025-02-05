@@ -9,7 +9,7 @@ export const runtime = "nodejs";
 export async function GET() {
   try {
     await connectToDatabase();
-    const startups = await Startup.find().select("startup_id name description valuation highest_bid owner_team currentBidAmount industry problem_it_solves businessModel funding_companies");
+    const startups = await Startup.find().select("startup_id name description valuation highest_bid owner_team currentBidAmount industry problem_it_solves businessModel bid_session funding_companies");
     console.log(startups);
     
     return NextResponse.json({ success: true, startups }, { status: 200 });

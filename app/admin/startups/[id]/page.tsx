@@ -10,6 +10,7 @@ interface Startup {
   description: string;
   currentBidAmount: number;
   highest_bid: number;
+  bid_session: boolean;
 }
 
 interface Team {
@@ -94,6 +95,24 @@ export default function StartupDetailsPage() {
       .catch(() => alert("Error completing purchase"));
   };
 
+  const handleStartBidSession = () => {
+    if (!startup) return;
+    fetch(`/api/startups/${startup._id}`, {
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          alert("Bid session started successfully!");
+          // Update the local state for bid_session
+          setStartup((prev) => (prev ? { ...prev, bid_session: true } : null));
+        } else {
+          alert(data.error || "Failed to start bid session");
+        }
+      })
+      .catch(() => alert("Error starting bid session"));
+  };
+  
   const filteredTeams = teams.filter((team) =>
     team.team_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -119,6 +138,17 @@ export default function StartupDetailsPage() {
         <div className="bg-white p-6 rounded-xl shadow-md mb-6">
           <h1 className="text-2xl font-bold mb-2">{startup.name}</h1>
           <p className="text-gray-600">{startup.description}</p>
+          <p className="text-gray-700">
+            Bid Session: {startup.bid_session ? "Active" : "Inactive"}
+          </p>
+          {!startup.bid_session && (
+            <button
+              onClick={handleStartBidSession}
+              className="mt-4 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600"
+            >
+              Start Bid Session
+            </button>
+          )}
         </div>
       ) : (
         <p>Loading startup details...</p>
