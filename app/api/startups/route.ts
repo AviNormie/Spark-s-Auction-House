@@ -3,12 +3,15 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Startup from "@/models/Startup";
 import Counter from "@/models/Counter";
 import { StartupSchema } from "@/lib/validations/startup";
+import { log } from "console";
 
 export const runtime = "nodejs";
 export async function GET() {
   try {
     await connectToDatabase();
-    const startups = await Startup.find();
+    const startups = await Startup.find().select("startup_id name description valuation highest_bid owner_team currentBidAmount industry problem_it_solves businessModel bid_session funding_companies");
+    console.log(startups);
+    
     return NextResponse.json({ success: true, startups }, { status: 200 });
   } catch (error) {
     console.error("GET /api/startups Error:", error);

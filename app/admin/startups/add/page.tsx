@@ -33,6 +33,7 @@ export default function StartupForm() {
       problem_it_solves: "",
       businessModel: "",
       funding_companies: [],
+      bid_session: false, // Default value for bid_session is false
     },
   });
 
@@ -45,7 +46,6 @@ export default function StartupForm() {
   }, [errors]);
 
   const onSubmit = async (data: StartupFormValues) => {
-    // console.log("Form submitted with data:", data);
     setLoading(true);
 
     try {
@@ -54,13 +54,11 @@ export default function StartupForm() {
         funding_companies: Array.isArray(data.funding_companies)
           ? data.funding_companies
           : (data.funding_companies ?? "").split(",").map((c) => c.trim()),
+        bid_session: data.bid_session ?? false, // Ensure bid_session is false if not modified
       };
-
-    //   console.log("Sending data to API:", formattedData);
 
       const response = await axios.post("/api/startups", formattedData);
       console.log("API response:", response.data);
-    //   console.log("API Response:", response.data);
 
       toast.success("Startup added successfully!");
       reset();
