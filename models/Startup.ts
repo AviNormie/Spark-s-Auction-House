@@ -14,6 +14,7 @@ export interface IStartup extends Document {
   problem_it_solves: string;
   businessModel: string;
   funding_companies: string[];
+  bid_session: boolean;
 }
 
 const StartupSchema = new Schema<IStartup>(
@@ -29,6 +30,7 @@ const StartupSchema = new Schema<IStartup>(
     problem_it_solves: { type: String },
     businessModel: { type: String },
     funding_companies: { type: [String] },
+    bid_session: { type:Boolean, default: false}
   },
   { timestamps: true }
 );
