@@ -118,14 +118,14 @@ export default function RegistrationPage() {
   ];
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-black text-white p-4">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="w-full max-w-lg"
       >
-        <div className="bg-gray-800 shadow-lg rounded-2xl p-8 space-y-8">
+      <div className="bg-gradient-to-br from-[#00012e8a] to-[#4100009f] shadow-[0_8px_16px_rgba(151,71,255,0.24)] rounded-2xl p-8 space-y-8">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
