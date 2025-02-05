@@ -18,25 +18,15 @@ interface Team {
   credits: number;
 }
 
-const predefinedBidAmounts = [
-  100, 200, 500, 700, 1000, 1200, 1500, 2000, 2500, 3000, 3500, 5000,
-];
-
 export default function StartupDetailsPage() {
   const [startup, setStartup] = useState<Startup | null>(null);
   const [teams, setTeams] = useState<Team[]>([]);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-  const [bidIndex, setBidIndex] = useState(0);
+  const [bidAmount, setBidAmount] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showNotification, setShowNotification] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const params = useParams();
-
-  // Current bid amount is the one at bidIndex.
-  const currentBidAmount = predefinedBidAmounts[bidIndex];
-  // The Place Bid button shows the next amount.
-  const nextBidAmount =
-    predefinedBidAmounts[(bidIndex + 1) % predefinedBidAmounts.length];
 
   useEffect(() => {
     const startupId = params.id;
@@ -68,14 +58,15 @@ export default function StartupDetailsPage() {
       .catch(() => setError("Error fetching teams"));
   }, [params.id]);
 
-  // Clicking "Place Bid" moves to the next bid amount.
-  const handlePlaceBid = () => {
-    setBidIndex((prevIndex) => (prevIndex + 1) % predefinedBidAmounts.length);
-  };
-
-  // When purchasing, the currentBidAmount is used.
   const handlePurchase = () => {
-    if (!selectedTeam || !startup) return;
+    if (!selectedTeam || !startup) {
+      alert("Please select a team.");
+      return;
+    }
+    if (!bidAmount || bidAmount <= 0) {
+      alert("Please enter a valid bid amount.");
+      return;
+    }
 
     fetch(`/api/startups/${startup._id}/bid`, {
       method: "POST",
@@ -84,7 +75,7 @@ export default function StartupDetailsPage() {
       },
       body: JSON.stringify({
         teamId: selectedTeam._id,
-        bidAmount: currentBidAmount,
+        bidAmount,
       }),
     })
       .then((res) => res.json())
@@ -93,9 +84,8 @@ export default function StartupDetailsPage() {
           setShowNotification(true);
           setTimeout(() => setShowNotification(false), 3000);
 
-          // Deduct the bid amount from the team's credits.
           setSelectedTeam((prev) =>
-            prev ? { ...prev, credits: prev.credits - currentBidAmount } : null
+            prev ? { ...prev, credits: prev.credits - bidAmount } : null
           );
         } else {
           alert(data.error || "Failed to complete purchase");
@@ -129,21 +119,20 @@ export default function StartupDetailsPage() {
         <div className="bg-white p-6 rounded-xl shadow-md mb-6">
           <h1 className="text-2xl font-bold mb-2">{startup.name}</h1>
           <p className="text-gray-600">{startup.description}</p>
-          <p className="mt-4 text-lg font-semibold">
-            Current Bid: ${currentBidAmount}
-          </p>
         </div>
       ) : (
         <p>Loading startup details...</p>
       )}
 
-      <div className="bg-white p-6 rounded-xl shadow-md">
-        <button
-          onClick={handlePlaceBid}
-          className="mt-4 px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
-        >
-          Place Bid ${nextBidAmount}
-        </button>
+      <div className="mt-6">
+        <h3 className="text-lg font-semibold mb-2">Enter Bid Amount:</h3>
+        <input
+          type="number"
+          value={bidAmount ?? ""}
+          onChange={(e) => setBidAmount(Number(e.target.value))}
+          placeholder="Enter your bid"
+          className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400"
+        />
       </div>
 
       <div className="mt-6">
@@ -181,7 +170,7 @@ export default function StartupDetailsPage() {
             onClick={handlePurchase}
             className="fixed bottom-4 right-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
           >
-            Purchase for ${currentBidAmount}
+            Purchase for ${bidAmount}
           </button>
         </div>
       )}
