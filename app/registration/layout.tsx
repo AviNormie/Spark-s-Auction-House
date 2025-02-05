@@ -8,7 +8,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="relative min-h-screen bg-black overflow-hidden">
+        {/* Moving dots background */}
+        <div className="absolute inset-0 bg-dots pointer-events-none"></div>
+
         {children}
         <Toaster />
       </body>
