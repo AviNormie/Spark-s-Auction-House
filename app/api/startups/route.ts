@@ -3,7 +3,6 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Startup from "@/models/Startup";
 import Counter from "@/models/Counter";
 import { StartupSchema } from "@/lib/validations/startup";
-import { log } from "console";
 
 export const runtime = "nodejs";
 export async function GET() {
