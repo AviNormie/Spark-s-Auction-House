@@ -3,8 +3,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { gsap } from "gsap";
+import { useRouter } from "next/navigation";
 
 export function Event() {
+  const router = useRouter();
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -26,7 +28,7 @@ export function Event() {
     }, 1000);
   
     return () => clearInterval(interval);
-  }, []);
+  }, [router]);
   
   useEffect(() => {
     gsap.fromTo(
@@ -62,7 +64,7 @@ export function Event() {
           <h1 className="text-xl md:text-4xl font-bold text-gray-200 opacity-85 mr-2">
             Spark-s Auction House: <br /> Where Innovation Meets Investment
           </h1>
-          <button className="mt-4 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition w-auto max-w-[200px]">
+          <button onClick={()=>{router.push('registration')}} className="mt-4 bg-white text-black px-6 md:px-8 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-300 transition w-auto max-w-[200px]">
   Register Now
 </button>
 

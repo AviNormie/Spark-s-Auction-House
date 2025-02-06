@@ -6,7 +6,7 @@ export default function Socials() {
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-50"
-        style={{ backgroundImage: "url('/event-bg.png')" }} // Update with actual image path
+        // style={{ backgroundImage: "url('/event-bg.png')" }} // Update with actual image path
       >
         <div className="absolute inset-0 bg-black bg-opacity-40"></div>
       </div>
@@ -14,7 +14,7 @@ export default function Socials() {
       {/* Content */}
       <div className="relative z-10 text-center text-white px-6">
         <p className="text-lg md:text-xl font-light mb-6">
-          We want to stay in touch with you! Please follow us on social media so we can keep in touch.
+        We would love to stay connected with you! Follow us on social media to keep up with the latest updates and exciting news
         </p>
 
         {/* Social Icons */}
