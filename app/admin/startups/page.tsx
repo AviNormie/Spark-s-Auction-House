@@ -38,7 +38,20 @@ export default function AuctionPage() {
   useEffect(() => {
     const fetchStartups = async () => {
       try {
-        const response = await axios.get("/api/startups");
+        // Get the token from localStorage
+        const token = localStorage.getItem("adminToken");
+
+        if (!token) {
+          setError("Unauthorized: No token found.");
+          setStartups([]);
+          return;
+        }
+
+        const response = await axios.get("/api/startups", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+          },
+        });
 
         if (response.data.success && Array.isArray(response.data.startups)) {
           setStartups(response.data.startups);

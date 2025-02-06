@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     await connectToDatabase();
     const body = await req.json();
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { startup_id, ...dataWithoutId } = body;
     const validationResult = StartupSchema.safeParse(dataWithoutId);
 
