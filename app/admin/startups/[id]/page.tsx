@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Transition } from "@headlessui/react";
+import Image from "next/image";
+import { Search } from "lucide-react";
 
 interface Startup {
   _id: string;
@@ -112,13 +114,13 @@ export default function StartupDetailsPage() {
       })
       .catch(() => alert("Error starting bid session"));
   };
-  
+
   const filteredTeams = teams.filter((team) =>
     team.team_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen text-gray-800 relative">
+    <div className="min-h-screen bg-black text-white">
       <Transition
         show={showNotification}
         enter="transition-opacity duration-500"
@@ -133,77 +135,137 @@ export default function StartupDetailsPage() {
         </div>
       </Transition>
 
-      {error && <p className="text-red-500">{error}</p>}
-      {startup ? (
-        <div className="bg-white p-6 rounded-xl shadow-md mb-6">
-          <h1 className="text-2xl font-bold mb-2">{startup.name}</h1>
-          <p className="text-gray-600">{startup.description}</p>
-          <p className="text-gray-700">
-            Bid Session: {startup.bid_session ? "Active" : "Inactive"}
-          </p>
-          {!startup.bid_session && (
-            <button
-              onClick={handleStartBidSession}
-              className="mt-4 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600"
-            >
-              Start Bid Session
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <div className="p-1 rounded-3xl mb-8">
+            <div className="bg-black p-12 rounded-3xl">
+              <Image
+                src="/hero-text.png"
+                alt="Spark's Auction House"
+                width={600}
+                height={150}
+                className="mx-auto mb-8"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-center items-center gap-2 mb-12">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="w-full max-w-2xl px-6 py-4 text-black rounded-l-full text-lg"
+            />
+            <button className="px-8 py-4 bg-gradient-to-b from-red-600 to-blue-600 rounded-r-full">
+              <Search className="w-6 h-6" />
             </button>
-          )}
+          </div>
         </div>
-      ) : (
-        <p>Loading startup details...</p>
-      )}
-
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2">Enter Bid Amount:</h3>
-        <input
-          type="number"
-          value={bidAmount ?? ""}
-          onChange={(e) => setBidAmount(Number(e.target.value))}
-          placeholder="Enter your bid"
-          className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400"
-        />
-      </div>
-
-      <div className="mt-6">
-        <h3 className="text-lg font-semibold mb-2">Search Team for Purchase:</h3>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search teams..."
-          className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400"
-        />
-        <div className="space-y-2">
-          {filteredTeams.length > 0 ? (
-            filteredTeams.map((team) => (
-              <div
-                key={team._id}
-                className="p-4 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
-                onClick={() => setSelectedTeam(team)}
-              >
-                {team.team_name}
+        <div
+          className="w-full max-w-full overflow-hidden mx-auto xl:max-w-[1400px] 2xl:max-w-[3600px]"
+          style={{
+            backgroundImage: "url('/event-bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        >
+          <div className="flex flex-col md:flex-row gap-8 ">
+            <div className="">
+              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl mb-8">
+                <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
+                  {startup ? (
+                    <>
+                      <h1 className="text-3xl font-bold mb-6">
+                        Startup Number: {startup._id}
+                      </h1>
+                      <div className="grid md:grid-cols-2 gap-8 mb-6">
+                        <div>
+                          <h2 className="text-xl font-semibold mb-4">
+                            Startup Details
+                          </h2>
+                          <p className="text-gray-300">{startup.description}</p>
+                        </div>
+                        <div>
+                          <h2 className="text-xl font-semibold mb-4">
+                            Bid Details
+                          </h2>
+                          <p className="text-gray-300">
+                            Current Bid: ${startup.currentBidAmount}
+                            <br />
+                            Highest Bid: ${startup.highest_bid}
+                            <br />
+                            Status:{" "}
+                            {startup.bid_session ? "Active" : "Inactive"}
+                          </p>
+                        </div>
+                      </div>
+                      {!startup.bid_session && (
+                        <button
+                          onClick={handleStartBidSession}
+                          className="mt-4 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600"
+                        >
+                          Start Bid Session
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <p>Loading startup details...</p>
+                  )}
+                </div>
               </div>
-            ))
-          ) : (
-            <p>No teams found</p>
-          )}
+
+              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
+                <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
+                  <h3 className="text-lg font-semibold mb-2">
+                    Enter Bid Amount:
+                  </h3>
+                  <input
+                    type="number"
+                    value={bidAmount ?? ""}
+                    onChange={(e) => setBidAmount(Number(e.target.value))}
+                    placeholder="Enter your bid"
+                    className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400 text-black"
+                  />
+                  {selectedTeam && (
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold mb-4">
+                        {selectedTeam.team_name} Credits: {selectedTeam.credits}
+                      </h3>
+                      <button
+                        onClick={handlePurchase}
+                        className="px-12 py-3 bg-gradient-to-b from-red-600 to-blue-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
+                      >
+                        PURCHASE ${bidAmount}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="w-80">
+              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
+                <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
+                  <h2 className="text-2xl font-bold mb-4">Teams</h2>
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                    {filteredTeams.map((team) => (
+                      <div
+                        key={team._id}
+                        className="p-4 bg-black bg-opacity-70 rounded-lg cursor-pointer hover:bg-opacity-90 transition-colors"
+                        onClick={() => setSelectedTeam(team)}
+                      >
+                        <h3 className="font-semibold">{team.team_name}</h3>
+                        <p className="text-gray-400">Credits: {team.credits}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      {selectedTeam && (
-        <div className="mt-4">
-          <h3 className="text-lg font-semibold">
-            {selectedTeam.team_name} Credits: {selectedTeam.credits}
-          </h3>
-          <button
-            onClick={handlePurchase}
-            className="fixed bottom-4 right-4 px-6 py-2 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600"
-          >
-            Purchase for ${bidAmount}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

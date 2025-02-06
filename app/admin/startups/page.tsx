@@ -39,7 +39,7 @@ export default function AuctionPage() {
     const fetchStartups = async () => {
       try {
         // Get the token from localStorage
-        const token = localStorage.getItem("adminToken");
+        const token = localStorage.getItem("token");
 
         if (!token) {
           setError("Unauthorized: No token found.");
