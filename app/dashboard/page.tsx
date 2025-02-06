@@ -10,6 +10,7 @@ import {
 import { useRouter } from "next/navigation";
 
 interface Startup {
+  startup_id: number;
   id: string;
   name: string;
 }
@@ -164,10 +165,6 @@ function App() {
             <LayoutDashboard className="h-5 w-5" />
             <span>Overview</span>
           </a>
-          <a href="#" className="sidebar-link">
-            <Rocket className="h-5 w-5" />
-            <span>Startups</span>
-          </a>
         </nav>
       </aside>
 
@@ -249,7 +246,7 @@ function App() {
                 {team.purchased_startups && team.purchased_startups.length > 0 ? (
                   team.purchased_startups.map((startup) => (
                     <li key={startup.id} className="py-2 border-b border-gray-700">
-                      {startup.name}
+                      {startup.startup_id}
                     </li>
                   ))
                 ) : (
