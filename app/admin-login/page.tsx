@@ -26,9 +26,9 @@ export default function AdminLogin() {
       });
 
       if (data.success && data.token) {
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("adminToken", data.token);
         toast.success("Login successful!");
-        router.push("/admin/startups"); // Redirect to dashboard
+        router.push("/admin/startups"); 
       } else {
         throw new Error(data.error || "Login failed");
       }
