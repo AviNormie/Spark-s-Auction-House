@@ -57,10 +57,10 @@ export async function POST(req: NextRequest) {
     }
 
     // Log the initial data before the update
-    console.log("Before Bid:");
-    console.log("Team Credits:", team.credits);
-    console.log("Startup Current Bid:", startup.currentBidAmount);
-    console.log("Team Purchased Startups:", team.purchased_startups);
+    // console.log("Before Bid:");
+    // console.log("Team Credits:", team.credits);
+    // console.log("Startup Current Bid:", startup.currentBidAmount);
+    // console.log("Team Purchased Startups:", team.purchased_startups);
 
     // Update the startup's owner_team and bid information
     startup.owner_team = team._id;

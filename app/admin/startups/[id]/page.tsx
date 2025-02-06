@@ -82,7 +82,7 @@ export default function StartupDetailsPage() {
         setError("Error fetching teams");
         console.error("Error fetching teams:", err);
       });
-  }, [params.id]);
+  }, [params.id, error]);
 
   const handlePurchase = () => {
     if (!selectedTeam || !startup) {
