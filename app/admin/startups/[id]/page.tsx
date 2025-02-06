@@ -13,7 +13,21 @@ interface Startup {
   currentBidAmount: number;
   highest_bid: number;
   bid_session: boolean;
+  funding_companies?: string[];
 }
+// interface Startup {
+//   _id: string;
+//   name: string;
+//   description: string;
+//   valuation?: number;
+//   highestBid?: number;
+//   ownerTeam?: string;
+//   currentBidAmount?: number;
+//   industry?: string;
+//   problemItSolves?: string;
+//   businessModel?: string;
+//   fundingCompanies?: string[];
+// }
 
 interface Team {
   _id: string;
@@ -35,6 +49,7 @@ export default function StartupDetailsPage() {
     const startupId = params.id;
     if (!startupId) {
       setError("Invalid startup ID");
+      console.error(error);
       return;
     }
 
@@ -45,9 +60,13 @@ export default function StartupDetailsPage() {
           setStartup(data.startup);
         } else {
           setError(data.error || "Failed to fetch startup");
+          console.error(data.error || "Failed to fetch startup");
         }
       })
-      .catch(() => setError("Error fetching startup"));
+      .catch((err) => {
+        setError("Error fetching startup");
+        console.error("Error fetching startup:", err);
+      });
 
     fetch("/api/teams")
       .then((res) => res.json())
@@ -56,9 +75,13 @@ export default function StartupDetailsPage() {
           setTeams(data.teams);
         } else {
           setError(data.error || "Failed to fetch teams");
+          console.error(data.error || "Failed to fetch teams");
         }
       })
-      .catch(() => setError("Error fetching teams"));
+      .catch((err) => {
+        setError("Error fetching teams");
+        console.error("Error fetching teams:", err);
+      });
   }, [params.id]);
 
   const handlePurchase = () => {
@@ -106,7 +129,6 @@ export default function StartupDetailsPage() {
       .then((data) => {
         if (data.success) {
           alert("Bid session started successfully!");
-          // Update the local state for bid_session
           setStartup((prev) => (prev ? { ...prev, bid_session: true } : null));
         } else {
           alert(data.error || "Failed to start bid session");
@@ -135,7 +157,7 @@ export default function StartupDetailsPage() {
         </div>
       </Transition>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="p-1 rounded-3xl mb-8">
             <div className="bg-black p-12 rounded-3xl">
@@ -163,16 +185,16 @@ export default function StartupDetailsPage() {
           </div>
         </div>
         <div
-          className="w-full max-w-full overflow-hidden mx-auto xl:max-w-[1400px] 2xl:max-w-[3600px]"
+          className="w-full max-w-full overflow-hidden mx-auto rounded-3xl"
           style={{
             backgroundImage: "url('/event-bg.png')",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
-          <div className="flex flex-col md:flex-row gap-8 ">
-            <div className="">
-              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl mb-8">
+          <div className="flex flex-col lg:flex-row gap-8 p-8">
+            <div className="flex-grow space-y-8">
+              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
                 <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
                   {startup ? (
                     <>
@@ -185,6 +207,9 @@ export default function StartupDetailsPage() {
                             Startup Details
                           </h2>
                           <p className="text-gray-300">{startup.description}</p>
+                          <p className="text-gray-300">
+                            {startup.funding_companies?.join(", ")}
+                          </p>
                         </div>
                         <div>
                           <h2 className="text-xl font-semibold mb-4">
@@ -203,7 +228,7 @@ export default function StartupDetailsPage() {
                       {!startup.bid_session && (
                         <button
                           onClick={handleStartBidSession}
-                          className="mt-4 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600"
+                          className="mt-4 px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors"
                         >
                           Start Bid Session
                         </button>
@@ -229,9 +254,6 @@ export default function StartupDetailsPage() {
                   />
                   {selectedTeam && (
                     <div className="text-center">
-                      <h3 className="text-lg font-semibold mb-4">
-                        {selectedTeam.team_name} Credits: {selectedTeam.credits}
-                      </h3>
                       <button
                         onClick={handlePurchase}
                         className="px-12 py-3 bg-gradient-to-b from-red-600 to-blue-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
@@ -244,7 +266,7 @@ export default function StartupDetailsPage() {
               </div>
             </div>
 
-            <div className="w-80">
+            <div className="lg:w-96">
               <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
                 <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
                   <h2 className="text-2xl font-bold mb-4">Teams</h2>
@@ -256,7 +278,7 @@ export default function StartupDetailsPage() {
                         onClick={() => setSelectedTeam(team)}
                       >
                         <h3 className="font-semibold">{team.team_name}</h3>
-                        <p className="text-gray-400">Credits: {team.credits}</p>
+                        {/* <p className="text-gray-400">Credits: {team.credits}</p> */}
                       </div>
                     ))}
                   </div>
