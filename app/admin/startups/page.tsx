@@ -17,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface Startup {
   _id: string;
   name: string;
+  startup_id: number;
   description: string;
   valuation?: number;
   highestBid?: number;
@@ -51,7 +52,7 @@ export default function AuctionPage() {
 
         const response = await axios.get("/api/startups", {
           headers: {
-            Authorization: `Bearer ${token}`, // Add the token to the Authorization header
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -72,11 +73,15 @@ export default function AuctionPage() {
     fetchStartups();
   }, []);
 
-  const filteredStartups = startups.filter(
-    (startup) =>
+  const filteredStartups = startups.filter((startup) => {
+    if (!isNaN(Number(searchTerm)) && searchTerm.trim() !== "") {
+      return startup.startup_id === Number(searchTerm);
+    }
+    return (
       startup.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       startup.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    );
+  });
 
   const handleRouteChange = (id: string) => {
     router.push(`/admin/startups/${id}`);
@@ -89,7 +94,7 @@ export default function AuctionPage() {
       </h1>
       <Input
         className="w-full max-w-md mx-auto mb-8"
-        placeholder="Search by company name or description..."
+        placeholder="Search by company name, description, or ID..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
       />
@@ -131,12 +136,17 @@ export default function AuctionPage() {
               className="cursor-pointer hover:shadow-lg transition-shadow h-64 flex flex-col"
               onClick={() => handleRouteChange(startup._id)}
             >
+              <div className="flex flex-col h-full">
               <CardHeader className="flex-grow">
+              <p className=" text-gray-600 line-clamp-2 text-2xl">
+                  {startup.startup_id}
+                </p>
                 <CardTitle className="text-xl mb-2">{startup.name}</CardTitle>
                 <p className="text-sm text-gray-600 line-clamp-2">
                   {startup.description}
                 </p>
               </CardHeader>
+              </div>
               <CardContent>
                 {startup.industry && (
                   <Badge className="mb-2">{startup.industry}</Badge>

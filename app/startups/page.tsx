@@ -252,7 +252,7 @@ import { Navbar } from "@/components/mainPage/Navbar";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
-const EVENT_START_TIME = new Date("2025-02-07T18:00:00Z").getTime();
+const EVENT_START_TIME = new Date("2025-02-07T18:00:00").getTime(); 
 
 export default function EventTimer() {
   const router = useRouter();
