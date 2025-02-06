@@ -42,7 +42,7 @@ export default function AuctionPage() {
         const token = localStorage.getItem("adminToken");
 
         if (!token) {
-          setError("Unauthorized: No token found.");
+          setError("Brother you are not the admin, so kindly leave this page, or your phone will be hacked.");
           setStartups([]);
           return;
         }
