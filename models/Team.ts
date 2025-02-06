@@ -28,9 +28,9 @@ const TeamSchema = new Schema<ITeam>(
   {
     team_id: { type: Number, unique: true, required: true },
     team_name: { type: String, required: true },
-    password: { type: String, required: true, select: false }, // Password field (hidden in queries)
+    password: { type: String, required: true, select: false },
     members: { type: [MemberSchema], required: true },
-    credits: { type: Number, default: 5000 },
+    credits: { type: Number, default: 30000 },
     purchased_startups: [{ type: Schema.Types.ObjectId, ref: "Startup" }],
   },
   { timestamps: true }

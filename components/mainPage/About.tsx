@@ -15,10 +15,10 @@ export default function About () {
       </div>
 
       {/* Description */}
-      <p className="max-w-3xl text-lg font-medium text-gray-300">
-        Startup Auction is a one-of-a-kind event where budding entrepreneurs pitch their groundbreaking ideas, 
-        and investors bid to back the next big thing! Whether you are a startup looking for funding or an investor 
-        seeking promising ventures, this is your stage.
+      <p className="max-w-3xl text-lg font-medium text-gray-400">
+      Ever wanted to play the role of a high-stakes investor? Here’s your chance! In this thrilling investment showdown, you and your team will analyze real startups, strategize your bids, and compete to build the most valuable portfolio—all within a set budget. Think you have what it takes to spot the next big thing?
+<br />
+The twist? The real-world market will decide your fate! By 2025, the actual performance of your chosen startups will determine the winners. Will you strike gold or go bust? Time to put your investment instincts to the test! 💰🔥
       </p>
     </section>
   );

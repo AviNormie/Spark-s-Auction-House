@@ -4,22 +4,22 @@ const features = [
   {
     icon: <FaBolt size={28} />,
     title: "Pitch Your Idea",
-    description: "Gain visibility and attract investors.",
+    description: "Showcase your startup, grab attention.",
   },
   {
     icon: <FaGavel size={28} />,
     title: "Bid on Startups",
-    description: "Secure shares in the most promising businesses.",
+    description: "Compete to invest in the most promising ventures ",
   },
   {
     icon: <FaNetworkWired size={28} />,
-    title: "Network & Collaborate",
+    title: "Connect & Collaborate",
     description: "Expand your connections and grow together.",
   },
   {
     icon: <FaGift size={28} />,
-    title: "Win Exclusive Perks",
-    description: "Unlock special rewards and benefits.",
+    title: "Claim Your Rewards",
+    description: "Win exclusive perks and bragging rights as the ultimate investor!",
   },
 ];
 
