@@ -8,8 +8,9 @@ import {
   Plus,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import { ClipLoader } from "react-spinners";
 interface Startup {
+  highest_bid: number;
   startup_id: number;
   id: string;
   name: string;
@@ -76,9 +77,6 @@ function App() {
       const data = await fetchTeamData();
       setTeam(data);
       setLoading(false);
-      if (data?.purchased_startups) {
-        console.log("Purchased Startups:", data.purchased_startups);
-      }
     };
     getData();
   }, []);
@@ -139,7 +137,11 @@ function App() {
   };
 
   if (loading) {
-    return <div className="text-center p-10 text-black">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-black">
+        <ClipLoader color="#3498db" size={50} />
+      </div>
+    );
   }
 
   if (!team) {
@@ -245,8 +247,9 @@ function App() {
               <ul className="mt-4">
                 {team.purchased_startups && team.purchased_startups.length > 0 ? (
                   team.purchased_startups.map((startup) => (
-                    <li key={startup.id} className="py-2 border-b border-gray-700">
-                      {startup.startup_id}
+                    <li key={startup.id} className="py-2 border-b border-gray-700 flex justify-between items-center">
+                      <span className="text-gray-300">Startup ID : {startup.startup_id}</span>
+                      <span className="text-right text-gray-300">Highest Bid: {startup.highest_bid}</span>
                     </li>
                   ))
                 ) : (
@@ -254,6 +257,7 @@ function App() {
                 )}
               </ul>
             </div>
+
           </div>
         </main>
       </div>

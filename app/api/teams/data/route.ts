@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   try {
     const team = await Team.findOne({ team_id: decodedToken.team_id })
   .select("-password")
-  .populate("purchased_startups", "startup_id name"); // Only fetch the name of the startup
+  .populate("purchased_startups", "startup_id highest_bid name"); // Only fetch the name of the startup
   console.log("Fetched Purchased Startups:", team?.purchased_startups); 
     if (!team) {
       return NextResponse.json({ error: "Team not found" }, { status: 404 });
