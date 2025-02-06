@@ -285,7 +285,7 @@ export default function EventTimer() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [router]);
 
   return (
     <>
