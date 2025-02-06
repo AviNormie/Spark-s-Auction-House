@@ -20,7 +20,10 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      const { data } = await axios.post("/api/admin/login", { email, password });
+      const { data } = await axios.post("/api/admin/login", {
+        email,
+        password,
+      });
 
       if (data.success && data.token) {
         localStorage.setItem("token", data.token);
@@ -46,7 +49,7 @@ export default function AdminLogin() {
       <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.1) 1px,transparent 1px)] bg-[size:10px_10px]"></div>
 
       {/* Login Card */}
-      <Card className="w-[350px] bg-gray-900 border border-gray-700 shadow-lg relative z-10">
+      <Card className="w-[350px] bg-gray-900 border border-gray-700 shadow-lg relative z-10 text-white">
         <CardHeader>
           <CardTitle className="text-xl text-center">Admin Login</CardTitle>
         </CardHeader>
@@ -78,7 +81,11 @@ export default function AdminLogin() {
               />
             </div>
 
-            <Button type="submit" className="w-full bg-yellow-500 hover:bg-yellow-600" disabled={loading}>
+            <Button
+              type="submit"
+              className="w-full bg-yellow-500 hover:bg-yellow-600"
+              disabled={loading}
+            >
               {loading ? "Logging in..." : "Login"}
             </Button>
           </form>
