@@ -49,6 +49,7 @@ export default function StartupDetailsPage() {
     const startupId = params.id;
     if (!startupId) {
       setError("Invalid startup ID");
+      console.error(error);
       return;
     }
 
@@ -59,9 +60,13 @@ export default function StartupDetailsPage() {
           setStartup(data.startup);
         } else {
           setError(data.error || "Failed to fetch startup");
+          console.error(data.error || "Failed to fetch startup");
         }
       })
-      .catch(() => setError("Error fetching startup"));
+      .catch((err) => {
+        setError("Error fetching startup");
+        console.error("Error fetching startup:", err);
+      });
 
     fetch("/api/teams")
       .then((res) => res.json())
@@ -70,9 +75,13 @@ export default function StartupDetailsPage() {
           setTeams(data.teams);
         } else {
           setError(data.error || "Failed to fetch teams");
+          console.error(data.error || "Failed to fetch teams");
         }
       })
-      .catch(() => setError("Error fetching teams"));
+      .catch((err) => {
+        setError("Error fetching teams");
+        console.error("Error fetching teams:", err);
+      });
   }, [params.id]);
 
   const handlePurchase = () => {
