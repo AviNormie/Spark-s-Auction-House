@@ -6,7 +6,7 @@ export async function GET() {
   await connectToDatabase();
 
   try {
-    const teams = await Team.find({}, { _id: 1, team_name: 1, credits: 1 }); // Select only necessary fields
+    const teams = await Team.find({}, { _id: 1, team_name: 1, credits: 1}); // Select only necessary fields
     return NextResponse.json({ success: true, teams });
   } catch (error) { 
     console.error(error);           
