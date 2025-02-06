@@ -39,10 +39,12 @@ export default function AuctionPage() {
     const fetchStartups = async () => {
       try {
         // Get the token from localStorage
-        const token = localStorage.getItem("adminToken");
+        const token = localStorage.getItem("token");
 
         if (!token) {
-          setError("Brother you are not the admin, so kindly leave this page, or your phone will be hacked.");
+          setError(
+            "Brother you are not the admin, so kindly leave this page, or your phone will be hacked."
+          );
           setStartups([]);
           return;
         }
