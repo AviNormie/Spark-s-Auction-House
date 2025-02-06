@@ -24,6 +24,7 @@ export async function adminAuth(req: Request) {
 
     return admin; // Return admin if authenticated
   } catch (error) {
+    console.error("Admin Auth Error:", error);
     throw new Error("Unauthorized");
   }
 }

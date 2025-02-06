@@ -47,8 +47,9 @@ export default function StartupForm() {
 
   const onSubmit = async (data: StartupFormValues) => {
     setLoading(true);
-
+  
     try {
+      // Format data as before
       const formattedData = {
         ...data,
         funding_companies: Array.isArray(data.funding_companies)
@@ -56,10 +57,23 @@ export default function StartupForm() {
           : (data.funding_companies ?? "").split(",").map((c) => c.trim()),
         bid_session: data.bid_session ?? false, // Ensure bid_session is false if not modified
       };
-
-      const response = await axios.post("/api/startups", formattedData);
+  
+      // Get the token from localStorage
+      const token = localStorage.getItem("adminToken");
+  
+      if (!token) {
+        toast.error("Unauthorized: No token found.");
+        return;
+      }
+  
+      // Send POST request with token in Authorization header
+      const response = await axios.post("/api/startups", formattedData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add token to the header
+        },
+      });
+  
       console.log("API response:", response.data);
-
       toast.success("Startup added successfully!");
       reset();
     } catch (err: unknown) {
@@ -75,6 +89,7 @@ export default function StartupForm() {
       setLoading(false);
     }
   };
+  
 
   return (
     <Card className="max-w-lg mx-auto mt-6">
