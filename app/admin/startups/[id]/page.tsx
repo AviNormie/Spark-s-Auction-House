@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Transition } from "@headlessui/react";
 import Image from "next/image";
-import { Search } from "lucide-react";
+import { Search, ChevronDown } from "lucide-react";
 
 interface Startup {
   _id: string;
@@ -14,6 +14,7 @@ interface Startup {
   highest_bid: number;
   bid_session: boolean;
   funding_companies?: string[];
+  startup_id: number;
 }
 // interface Startup {
 //   _id: string;
@@ -33,6 +34,7 @@ interface Team {
   _id: string;
   team_name: string;
   credits: number;
+  team_id: number;
 }
 
 export default function StartupDetailsPage() {
@@ -44,6 +46,7 @@ export default function StartupDetailsPage() {
   const [showNotification, setShowNotification] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const params = useParams();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     const startupId = params.id;
@@ -73,6 +76,7 @@ export default function StartupDetailsPage() {
       .then((data) => {
         if (data.success) {
           setTeams(data.teams);
+          console.log(data.teams);
         } else {
           setError(data.error || "Failed to fetch teams");
           console.error(data.error || "Failed to fetch teams");
@@ -82,7 +86,7 @@ export default function StartupDetailsPage() {
         setError("Error fetching teams");
         console.error("Error fetching teams:", err);
       });
-  }, [params.id]);
+  }, [params.id, error]);
 
   const handlePurchase = () => {
     if (!selectedTeam || !startup) {
@@ -157,31 +161,18 @@ export default function StartupDetailsPage() {
         </div>
       </Transition>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-fit mx-auto px-4 py-8">
         <div className="text-center mb-12">
           <div className="p-1 rounded-3xl mb-8">
             <div className="bg-black p-12 rounded-3xl">
               <Image
                 src="/hero-text.png"
                 alt="Spark's Auction House"
-                width={600}
+                width={800}
                 height={150}
                 className="mx-auto mb-8"
               />
             </div>
-          </div>
-
-          <div className="flex justify-center items-center gap-2 mb-12">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              className="w-full max-w-2xl px-6 py-4 text-black rounded-l-full text-lg"
-            />
-            <button className="px-8 py-4 bg-gradient-to-b from-red-600 to-blue-600 rounded-r-full">
-              <Search className="w-6 h-6" />
-            </button>
           </div>
         </div>
         <div
@@ -194,14 +185,14 @@ export default function StartupDetailsPage() {
         >
           <div className="flex flex-col lg:flex-row gap-8 p-8">
             <div className="flex-grow space-y-8">
-              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
+              <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl max-w-screen-lg">
                 <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
                   {startup ? (
                     <>
                       <h1 className="text-3xl font-bold mb-6">
-                        Startup Number: {startup._id}
+                        Startup Number: {startup.startup_id}
                       </h1>
-                      <div className="grid md:grid-cols-2 gap-8 mb-6">
+                      <div className="grid md:grid-cols-2 gap-10 mb-6">
                         <div>
                           <h2 className="text-xl font-semibold mb-4">
                             Startup Details
@@ -215,11 +206,7 @@ export default function StartupDetailsPage() {
                           <h2 className="text-xl font-semibold mb-4">
                             Bid Details
                           </h2>
-                          <p className="text-gray-300">
-                            Current Bid: ${startup.currentBidAmount}
-                            <br />
-                            Highest Bid: ${startup.highest_bid}
-                            <br />
+                          <p className="text-gray-300 text-2xl">
                             Status:{" "}
                             {startup.bid_session ? "Active" : "Inactive"}
                           </p>
@@ -252,16 +239,6 @@ export default function StartupDetailsPage() {
                     placeholder="Enter your bid"
                     className="w-full p-3 border rounded-lg mb-4 focus:ring-2 focus:ring-blue-400 text-black"
                   />
-                  {selectedTeam && (
-                    <div className="text-center">
-                      <button
-                        onClick={handlePurchase}
-                        className="px-12 py-3 bg-gradient-to-b from-red-600 to-blue-600 text-white font-semibold rounded-lg hover:opacity-90 transition-opacity"
-                      >
-                        PURCHASE ${bidAmount}
-                      </button>
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
@@ -270,23 +247,59 @@ export default function StartupDetailsPage() {
               <div className="bg-gradient-to-r from-red-600 to-blue-600 p-[1px] rounded-2xl">
                 <div className="bg-[#111] bg-opacity-95 p-6 rounded-2xl">
                   <h2 className="text-2xl font-bold mb-4">Teams</h2>
-                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
-                    {filteredTeams.map((team) => (
-                      <div
-                        key={team._id}
-                        className="p-4 bg-black bg-opacity-70 rounded-lg cursor-pointer hover:bg-opacity-90 transition-colors"
-                        onClick={() => setSelectedTeam(team)}
-                      >
-                        <h3 className="font-semibold">{team.team_name}</h3>
-                        {/* <p className="text-gray-400">Credits: {team.credits}</p> */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setDropdownOpen(!dropdownOpen)}
+                      className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg flex justify-between items-center"
+                    >
+                      {selectedTeam ? selectedTeam.team_name : "Select a team"}
+                      <ChevronDown size={20} />
+                    </button>
+                    {dropdownOpen && (
+                      <div className="absolute w-full bg-gray-900 rounded-lg mt-1 max-h-60 overflow-auto z-10">
+                        <div className="p-2">
+                          <div className="flex items-center bg-gray-800 px-2 py-1 rounded-md">
+                            <Search size={16} className="text-gray-400" />
+                            <input
+                              type="text"
+                              placeholder="Search teams"
+                              className="w-full bg-transparent outline-none text-white px-2"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        {filteredTeams.map((team) => (
+                          <div
+                            key={team._id}
+                            className="px-4 py-2 hover:bg-gray-700 cursor-pointer"
+                            onClick={() => {
+                              setSelectedTeam(team);
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            {team.team_name + ": team id: " + team.team_id}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
+        {selectedTeam && (
+          <div className="text-center mt-6">
+            <button
+              onClick={handlePurchase}
+              className="px-16 py-6 bg-gray-800 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition-all shadow-purple-500"
+            >
+              PURCHASE ${bidAmount}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
