@@ -125,7 +125,7 @@ export default function RegistrationPage() {
         transition={{ duration: 0.5 }}
         className="w-full max-w-lg"
       >
-      <div className="bg-gradient-to-br from-[#00012e8a] to-[#4100009f] shadow-[0_8px_16px_rgba(151,71,255,0.24)] rounded-2xl p-8 space-y-8">
+     <div className="bg-gradient-to-br from-[#00012e8a] to-[#4100009f] shadow-[0_8px_16px_rgba(151,71,255,0.24)] rounded-2xl p-8 space-y-8 flex flex-col max-h-[70vh] overflow-y-auto">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
