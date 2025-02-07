@@ -32,12 +32,12 @@ export function NavbarTwo() {
           Startups
           <span className="absolute left-0 bottom-[-3px] w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
         </button>
-        <button
+        {/* <button
           className="px-5 py-2 bg-primary rounded-full bg-green-600 text-white font-semibold text-base cursor-pointer hover:bg-opacity-80 transition"
           onClick={() => router.push("/registration")}
         >
           Register Now
-        </button>
+        </button> */}
       </nav>
 
       {/* Mobile "Stair-Step" Layout */}
@@ -67,13 +67,13 @@ export function NavbarTwo() {
         </div>
 
         {/* Register Now */}
-        <button
+        {/* <button
           onClick={() => router.push("/registration")}
           className="stair-link group bg-primary px-4 py-2 rounded-md mt-4 relative"
         >
           Register Now
           <span className="absolute left-0 bottom-[-3px] w-full h-[2px] bg-white scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
-        </button>
+        </button> */}
       </div>
     </>
   );
